@@ -1,0 +1,2 @@
+loss_type,lr,threshold,reg,fold,frac,emb_size,NDCG@5,NDCG,RR,AP,RBP_80,RBP_90,RBP_95
+lambda_rr,0.01,4,0,1,5.0,32,0.207,0.5489,0.4463,0.2553,0.1896,0.1728,0.1473
