@@ -352,7 +352,7 @@ class lambda_loss:
             val = n_val[i]
             norm = 1.0 / (1 - torch.pow(p, rel))
             diff_new = torch.pow(p, doc_ranks[i, :, :rel]).permute(1, 0) - torch.pow(p, doc_ranks[i, :, rel:val])
-            diff_new = diff_new / norm
+            diff_new = (1 - p) * diff_new / norm
             rbp_diffs[i] = nn.ZeroPad2d((0, n_docs+rel-val, 0, n_docs-rel))(diff_new)
 
         lamb_updates = -1 / (1 + exped) * N * rbp_diffs
