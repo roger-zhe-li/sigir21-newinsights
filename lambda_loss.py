@@ -109,7 +109,7 @@ class lambda_loss:
 			# print(n_docs+rel-val)
 			dcg_diffs[i] = nn.ZeroPad2d((0, n_docs+rel-val, 0, n_docs-rel))(diff_new)
 
-		lamb_updates = -1 / (1 + exped) * N * dcg_diffs
+		lamb_updates = 1 / (1 + exped) * N * dcg_diffs.abs()
 		loss = lamb_updates.sum()
 
 	   
@@ -355,7 +355,7 @@ class lambda_loss:
             diff_new = (1 - p) * diff_new / norm
             rbp_diffs[i] = nn.ZeroPad2d((0, n_docs+rel-val, 0, n_docs-rel))(diff_new)
 
-        lamb_updates = -1 / (1 + exped) * N * rbp_diffs
+        lamb_updates = 1 / (1 + exped) * N * rbp_diffs.abs()
         loss = lamb_updates.sum()
        
         return loss
