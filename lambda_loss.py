@@ -101,15 +101,17 @@ class lambda_loss:
 		for i in range(num_doc):
 			rel = n_rel[i]
 			val = n_val[i]
+
 			diff_new = 1 / (1 + doc_ranks[i, :, :rel]).log2().permute(1, 0) - (1 / (1 + doc_ranks[i, :, rel:val]).log2())
-			# norm = (1 / (2 + torch.arange(rel).float()).log2()).sum().to(device)
-			# diff_new = diff_new / norm
+			norm = (1 / (2 + torch.arange(rel).float()).log2()).sum().to(device)
+			diff_new = diff_new / norm
 			# print(n_docs-rel)
 			# print(n_docs+rel-val)
 			dcg_diffs[i] = nn.ZeroPad2d((0, n_docs+rel-val, 0, n_docs-rel))(diff_new)
 
-		lamb_updates = 1 / (1 + exped) * N * dcg_diffs.abs()
+		lamb_updates = -1 / (1 + exped) * N * dcg_diffs
 		loss = lamb_updates.sum()
+
 	   
 		return loss
 
@@ -332,3 +334,28 @@ class lambda_loss:
 		# print(rank_list[:, n_rel:].size())
 
 		exped = torch.zeros([num_doc, n_docs, n_docs]).to(device)
+
+		for i in range(num_doc):
+            rel = n_rel[i]
+            val = n_val[i]
+            
+            rank_new = rank_list[i, :, :rel].permute(1, 0) - rank_list[i, :, rel:val] 
+            score_diffs = rank_new.exp()
+            exped[i] = nn.ZeroPad2d((0, n_docs+rel-val, 0, n_docs-rel))(score_diffs) 
+
+        N = 1
+ 
+        rbp_diffs = torch.zeros([num_doc, n_docs, n_docs]).to(device) 
+
+        for i in range(num_doc):
+            rel = n_rel[i]
+            val = n_val[i]
+            norm = 1.0 / (1 - torch.pow(p, rel))
+            diff_new = torch.pow(p, doc_ranks[i, :, :rel]).permute(1, 0) - torch.pow(p, doc_ranks[i, :, rel:val])
+            diff_new = diff_new / norm
+            rbp_diffs[i] = nn.ZeroPad2d((0, n_docs+rel-val, 0, n_docs-rel))(diff_new)
+
+        lamb_updates = -1 / (1 + exped) * N * rbp_diffs
+        loss = lamb_updates.sum()
+       
+        return loss
