@@ -86,7 +86,16 @@ The original [CiteULike-a](https://github.com/roger-zhe-li/sigir21-newinsights/b
 Please cite our SIGIR'21 paper if you use the code.
 
 ```
-
+@inproceedings{DBLP:conf/sigir/LiUH21,
+  author    = {Roger Zhe Li and
+               Juli{\'{a}}n Urbano and
+               Alan Hanjalic},
+  title     = {New Insights into Metric Optimization for Ranking-based Recommendation},
+  booktitle = {{SIGIR}},
+  pages     = {932--941},
+  publisher = {{ACM}},
+  year      = {2021}
+}
 ```
 
 
