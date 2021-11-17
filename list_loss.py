@@ -160,7 +160,7 @@ def ap_loss(device, rank_list, target_list, temp=1.0):
 
     target_list_mat = target_list.repeat(1, size, 1)
 
-    factor_1 = (target_list_mat * ap_matrix).sum(1)
+    factor_1 = (target_list_mat * ap_matrix).sum(-1)
     factor_2 = (target_list / rank_overall).squeeze(1)
     factor_3 = (torch.tensor(1).float().to(device) / target_list.sum())
 
